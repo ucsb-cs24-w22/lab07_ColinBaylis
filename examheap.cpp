@@ -1,88 +1,81 @@
-// heap.cpp
-// Colin Baylis 6061543
+// examheap.cpp
+// More complete tests of Heap functions for CS 24 lab
 
 #include "heap.h"
+#include <queue>
 #include <iostream>
-using std::cout;
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+#include <cassert>
+using namespace std;
 
-// Pushes a value into the heap, then ensures
-// the heap is correctly arranged
-void Heap::goUp(int index){
-  while(index > 0){
-    int n = index - 1;
-    int parInd = n/2;
-    if(vdata[index] >= vdata[parInd]){
-      return;
-    }
-    else{
-      int temp = vdata[index];
-      vdata[index] = vdata[parInd];
-      vdata[parInd] = temp;
-      index = parInd;
-    }
-  }
-}
-
-void Heap::goDown(int index){
-  int newIndex = 2 * index + 1;
-  int value = vdata[index];
-
-  while(newIndex < vdata.size()){
-    int minVal = value;
-    int minInd = -1;
-    int i = 0;
-    while (i < 2 && i + newIndex < vdata.size()) {
-      if (vdata[i + newIndex] < minVal){
-        minVal = vdata[i + newIndex];
-        minInd = i + newIndex;
-      }
-      i++;
-    }
-    if(minVal == value){
-      return;
-    }
-    else{
-      int temp = vdata[index];
-      vdata[index] = vdata[minInd];
-      vdata[minInd] = temp;
-      index = minInd;
-      newIndex = 2 * index + 1;
-    }
-  }
-}
-
-void Heap::push(int value){
-  vdata.push_back(value);
-  goUp(vdata.size()-1);
-}
-
-// Pops the minimum value off the heap
-// (but does not return it), then ensures
-// the heap is correctly arranged
-void Heap::pop(){
-  if(vdata.size() == 0){
-    return;
-  }
-  if(vdata.size() == 1){
-    vdata.erase(vdata.begin());
-    return;
-  }
-  int repVal = vdata[vdata.size() - 1];
-  vdata[0] = repVal;
-  vdata.pop_back();
-  goDown(0);
-}
-
-// Returns the minimum element in the heap
-int Heap::top(){
-  if(vdata.size() == 0) {
-    return -1;
-  }
-  return vdata[0];
-}
-
-// Returns true if the heap is empty, false otherwise
-bool Heap::empty(){
-  vdata.size() == 0;
-}
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        cout << "usage: " << argv[0] << " test#\n";
+        return 1;
     
+    }
+    int t = atoi(argv[1]);
+    std::priority_queue<int, std::vector<int>, std::greater<int>> data;
+    Heap h;
+    int numvals = 3;
+    if (t == 1) {
+        cout << "testing with one and two values .... ";
+        int sum = 0, count = 0;
+        Heap h;
+        srand(time(0));
+        int arand = rand() % 1000;
+        int brand = arand -10;
+        h.push(arand);
+        assert(h.top()==arand);
+        h.pop();
+        assert(h.empty());
+        h.push(arand);
+        h.push(brand);
+        assert(h.top()==brand);
+        h.pop();
+        h.pop();
+        assert(h.empty());
+        h.push(brand);
+        h.push(arand);
+        assert(!h.empty());
+        assert(h.top()==brand);
+
+        cout << "PASSED\n";
+        return 0;
+        
+	}
+    if (t == 2) {
+        cout << "testing with three values ... ";
+        numvals = 3;       
+    }
+    if (t == 3) {
+       cout << "testing with four values ... ";
+       numvals = 4;
+    }
+    if (t == 4){
+        cout << "testing with large data set ... ";
+        numvals = 200;
+    }
+    if (t == 5){
+        cout << "testing with very large data set ... ";
+        numvals = 20000;
+    } 
+    for (int i=0; i < numvals; i++) {
+            int arand = rand() % 2000;
+            data.push(arand);
+            h.push(arand);
+    }
+    while(!data.empty()){
+        assert(!h.empty());
+        assert(data.top()==h.top());
+        data.pop();
+        h.pop();
+    }
+    cout << "PASSED\n";
+
+        
+    return 0;
+
+}

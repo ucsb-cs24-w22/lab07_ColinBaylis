@@ -1,5 +1,5 @@
 // heap.cpp
-// Colin baylis 6061543
+// Colin Baylis 6061543
 
 #include "heap.h"
 #include <iostream>
@@ -7,63 +7,82 @@ using std::cout;
 
 // Pushes a value into the heap, then ensures
 // the heap is correctly arranged
-int Heap::min(int index) const
-{
-  int left = 2 * index;
-  int right = 2 * index + 1;
-  int n = vdata.size();
-  if (left - 1 < n && right - 1 < n) {
-    return vdata[left - 1] > vdata[right - 1] ?
-    right - 1 : left - 1;
-  }
-  if (left - 1 < n) {
-    return left - 1;
-  }
-  if (right - 1 < n) {
-    return right - 1;
-  }
-  return 0;
-}
-void Heap::push(int value){
-  vdata.push_back(value);
-  int n = vdata.size();
- for (int i = (n / 2); i >= 1; --i)
- {
-    int min = min(i);
-    if (vdata[min] < vdata[i - 1])
-    {
-      std::swap(vdata[i - 1], vdata[min]);
+void Heap::goUp(int index){
+  while(index > 0){
+    int n = index - 1;
+    int parInd = n/2;
+    if(vdata[index] >= vdata[parInd]){
+      return;
+    }
+    else{
+      int temp = vdata[index];
+      vdata[index] = vdata[parInd];
+      vdata[parInd] = temp;
+      index = parInd;
     }
   }
+}
+
+void Heap::goDown(int index){
+  int newIndex = 2 * index + 1;
+  int value = vdata[index];
+
+  while(newIndex < vdata.size()){
+    int minVal = value;
+    int minInd = -1;
+    int i = 0;
+    while (i < 2 && i + newIndex < vdata.size()) {
+      if (vdata[i + newIndex] < minVal){
+        minVal = vdata[i + newIndex];
+        minInd = i + newIndex;
+      }
+      i++;
+    }
+    if(minVal == value){
+      return;
+    }
+    else{
+      int temp = vdata[index];
+      vdata[index] = vdata[minInd];
+      vdata[minInd] = temp;
+      index = minInd;
+      newIndex = 2 * index + 1;
+    }
+  }
+}
+
+void Heap::push(int value){
+  vdata.push_back(value);
+  goUp(vdata.size()-1);
 }
 
 // Pops the minimum value off the heap
 // (but does not return it), then ensures
 // the heap is correctly arranged
 void Heap::pop(){
-  if (vdata.size() == 0) {
+  if(vdata.size() == 0){
     return;
   }
-  std::swap(vdata[0], vdata[vdata.size() - 1]);
-  vdata.pop_back();
-  int n = vdata.size();
-  for (size_t i = n / 2; i >= 1; --i)
-  {
-    int min = min(i);
-    if (vdata[min] < vdata[i - 1])
-    {
-      std::swap(vdata[i - 1], vdata[min]);
-    }
+  if(vdata.size() == 1){
+    vdata.erase(vdata.begin());
+    return;
   }
+  int repVal = vdata[vdata.size() - 1];
+  vdata[0] = repVal;
+  vdata.pop_back();
+  goDown(0);
 }
 
 // Returns the minimum element in the heap
 int Heap::top(){
+  if(vdata.size() == 0) {
+    return -1;
+  }
   return vdata[0];
 }
 
 // Returns true if the heap is empty, false otherwise
 bool Heap::empty(){
-  return vdata.size() == 0;
+  vdata.size() == 0;
 }
     

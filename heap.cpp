@@ -5,12 +5,10 @@
 #include <iostream>
 using std::cout;
 
-// Pushes a value into the heap, then ensures
-// the heap is correctly arranged
+// Helper Functions
 void Heap::goUp(int index){
   while(index > 0){
-    int n = index - 1;
-    int parInd = n/2;
+    int parInd = (index - 1)/2;
     if(vdata[index] >= vdata[parInd]){
       return;
     }
@@ -26,7 +24,6 @@ void Heap::goUp(int index){
 void Heap::goDown(int index){
   int newIndex = 2 * index + 1;
   int value = vdata[index];
-
   while(newIndex < vdata.size()){
     int minVal = value;
     int minInd = -1;
@@ -51,6 +48,8 @@ void Heap::goDown(int index){
   }
 }
 
+// Pushes a value into the heap, then ensures
+// the heap is correctly arranged
 void Heap::push(int value){
   vdata.push_back(value);
   goUp(vdata.size()-1);

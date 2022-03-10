@@ -82,6 +82,6 @@ int Heap::top(){
 
 // Returns true if the heap is empty, false otherwise
 bool Heap::empty(){
-  vdata.size() == 0;
+  return vdata.size() == 0;
 }
     
